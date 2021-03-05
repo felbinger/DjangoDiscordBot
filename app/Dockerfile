@@ -1,9 +1,7 @@
 ARG DBMS="mariadb"
-ARG AUTH="openldap"
 
 FROM python:3.9-alpine as builder
 ARG DBMS
-ARG AUTH
 
 # set work directory
 WORKDIR /build
@@ -13,22 +11,19 @@ RUN apk update \
 
 # install database dependencies
 RUN if [[ "${DBMS}" == "postgres" ]]; then apk add postgresql-dev; fi
-RUN if [[ "${AUTH}" == "openldap" ]]; then apk add build-base openldap-dev; fi
 
 # install dependencies
 COPY rqmts/ rqmts
 
 RUN cp rqmts/requirements.txt requirements.txt; \
     if [[ "${DBMS}" == "postgres" ]]; then cat rqmts/requirements.postgres.txt >> requirements.txt; fi; \
-    if [[ "${DBMS}" == "mariadb" ]]; then cat rqmts/requirements.mariadb.txt >> requirements.txt; fi; \
-    if [[ "${AUTH}" == "openldap" ]]; then cat rqmts/requirements.openldap.txt >> requirements.txt; fi;
+    if [[ "${DBMS}" == "mariadb" ]]; then cat rqmts/requirements.mariadb.txt >> requirements.txt; fi;
 
 RUN pip install --prefix=/build/venv -r requirements.txt
 
 FROM python:3.9-alpine
 ARG DBMS
-ARG AUTH
-ENV DBMS=${DBMS} PROJECT_NAME="pytemplate"
+ENV DBMS=${DBMS} PROJECT_NAME="app"
 
 # app config
 ENV SQL_USER=${PROJECT_NAME} ALLOWED_HOSTS='0.0.0.0' DEBUG=0
@@ -44,7 +39,6 @@ WORKDIR ${APP_HOME}
 
 # install database dependencies
 RUN if [[ "${DBMS}" == "postgres" ]]; then apk add --no-cache libpq; fi
-RUN if [[ "${AUTH}" == "openldap" ]]; then apk add --no-cache libldap; fi
 
 COPY --from=builder /build/venv/ /usr/local/
 

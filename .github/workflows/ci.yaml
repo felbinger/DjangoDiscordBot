@@ -7,8 +7,7 @@ on:
   pull_request:
 
 env:
-  # TODO adjust IMAGE_NAME
-  IMAGE_NAME: felbinger/pytemplate
+  IMAGE_NAME: felbinger/djangodiscordbot
   DOCKER_PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
   PYTHON_VERSION: 3.9
 
@@ -49,194 +48,163 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  test:
-    runs-on: ubuntu-latest
+#  test:
+#    runs-on: ubuntu-latest
+#
+#    services:
+#      mariadb:
+#        image: mariadb
+#        ports:
+#          - "3306:3306"
+#        env:
+#          MYSQL_RANDOM_ROOT_PASSWORD: true
+#          MYSQL_USER: app
+#          MYSQL_PASSWORD: SECRET_PASSWORD
+#          MYSQL_DATABASE: test_app
+#
+#      postgres:
+#        image: postgres
+#        ports:
+#          - "5432:5432"
+#        env:
+#          POSTGRES_USER: app
+#          POSTGRES_PASSWORD: SECRET_PASSWORD
+#          POSTGRES_DB: app
+#    strategy:
+#      matrix:
+#        python-version: [ 3.7, 3.8, 3.9 ]
+#        dbms: [ mariadb, postgres, sqlite3 ]
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Set up Python ${{ matrix.python-version }}
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#
+#      - name: Get pip cache dir
+#        id: pip-cache2
+#        run: |
+#          echo "::set-output name=dir::$(pip cache dir)"
+#
+#      - name: pip cache
+#        uses: actions/cache@v2.1.4
+#        with:
+#          path: ${{ steps.pip-cache2.outputs.dir }}
+#          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+#          restore-keys: |
+#            ${{ runner.os }}-pip-
+#
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install pytest
+#          sudo apt-get install -y python3-dev
+#          for req in $(ls app/rqmts/*); do
+#            if [[ -f $req ]]; then
+#              pip install -r $req
+#            fi
+#          done
+#
+#      - name: Generate environment variables
+#        id: gen-env
+#        run: |
+#          case ${{ matrix.dbms }} in
+#          "mariadb")
+#            echo "::set-output name=engine::django.db.backends.mysql"
+#            echo "::set-output name=port::3306"
+#            ;;
+#          "postgres")
+#            echo "::set-output name=engine::django.db.backends.postgresql"
+#            echo "::set-output name=port::5432"
+#            ;;
+#          "sqlite3")
+#            echo "::set-output name=engine::django.db.backends.sqlite3"
+#            ;;
+#          esac
+#
+#      - name: Django Integration Tests
+#        env:
+#          DBMS: ${{ matrix.dbms }}
+#          SQL_ENGINE: ${{ steps.gen-env.outputs.engine }}
+#          SQL_PORT: ${{ steps.gen-env.outputs.port }}
+#          SQL_USER: app
+#          SQL_PASSWORD: SECRET_PASSWORD
+#          SQL_DATABASE: app
+#        run: python app/manage.py test --no-input --settings app.settings
 
-    services:
-      mariadb:
-        image: mariadb
-        ports:
-          - "3306:3306"
-        env:
-          MYSQL_RANDOM_ROOT_PASSWORD: true
-          MYSQL_USER: app
-          MYSQL_PASSWORD: SECRET_PASSWORD
-          MYSQL_DATABASE: test_app
-
-      postgres:
-        image: postgres
-        ports:
-          - "5432:5432"
-        env:
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: SECRET_PASSWORD
-          POSTGRES_DB: app
-
-      ldap:
-        image: howardlau1999/openldap-bcrypt
-        env:
-          LDAP_ORGANISATIOn: Company Name
-          LDAP_DOMAIN: domain.tld
-          LDAP_ADMIN_PASSWORD: SECRET_PASSWORD
-
-    strategy:
-      matrix:
-        python-version: [ 3.7, 3.8, 3.9 ]
-        dbms: [ mariadb, postgres, sqlite3 ]
-        auth: [ local, openldap ]
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Get pip cache dir
-        id: pip-cache2
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
-
-      - name: pip cache
-        uses: actions/cache@v2.1.4
-        with:
-          path: ${{ steps.pip-cache2.outputs.dir }}
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest
-          sudo apt-get install -y python3-dev libldap2-dev libsasl2-dev slapd ldap-utils
-          for req in $(ls app/rqmts/*); do 
-            if [[ -f $req ]]; then 
-              pip install -r $req
-            fi
-          done
-
-      - name: Generate environment variables
-        id: gen-env
-        run: |
-          case ${{ matrix.dbms }} in
-          "mariadb")
-            echo "::set-output name=engine::django.db.backends.mysql"
-            echo "::set-output name=port::3306"
-            ;;
-          "postgres")
-            echo "::set-output name=engine::django.db.backends.postgresql"
-            echo "::set-output name=port::5432"
-            ;;
-          "sqlite3")
-            echo "::set-output name=engine::django.db.backends.sqlite3"
-            ;;
-          esac
-          case ${{ matrix.auth }} in
-          "local")
-            echo "::set-output name=ldap_uri::false"
-            ;;
-          "postgres")
-            echo "::set-output name=ldap_uri::ldap://ldap"
-            ;;
-          esac
-
-      - name: Django Integration Tests
-        env:
-          DBMS: ${{ matrix.dbms }}
-          SQL_ENGINE: ${{ steps.gen-env.outputs.engine }}
-          SQL_PORT: ${{ steps.gen-env.outputs.port }}
-          SQL_USER: app
-          SQL_PASSWORD: SECRET_PASSWORD
-          SQL_DATABASE: app
-          LDAP_URI: ${{ steps.gen-env.outputs.ldap_uri }}
-          LDAP_BIND_DN: cn=admin,dc=domain,dc=tld
-          LDAP_BIND_PASS: SECRET_PASSWORD
-          LDAP_USERS: cn=admin,dc=domain,dc=tld
-          LDAP_GROUPS: cn=admin,dc=domain,dc=tld
-          LDAP_GROUP: cn=admin,dc=domain,dc=tld
-          LDAP_SUPERGROUP: cn=admin,dc=domain,dc=tld
-        run: python app/manage.py test --no-input --settings pytemplate.settings
-
-  docker:
-    needs: [ test, lint ]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dbms: [ 'sqlite3', 'mariadb', 'postgres' ]
-        auth: [ 'local', 'openldap' ]
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Generate docker images tags
-        id: docker_gentags
-        run: |
-          authprovider=${{ matrix.auth }}
-          if [ "${authprovider}" == "local" ]; then
-            authprovider="localauth"
-          fi
-          echo ::set-output name=authprovider::"$authprovider"
-          
-          #tags=$(echo -e ${{steps.docker_meta.outputs.tags}} | sed -ne "s/$/-${{ matrix.dbms }}-${authprovider}&/p" | tr "\n" "," | sed 's/\(.*\),/\1/')
-          #if [[ "${{ matrix.dbms == 'mariadb' && matrix.auth == 'openldap' }}" == "true" ]]; then
-          #  tags="${tags},${{steps.docker_meta.outputs.tags}}"
-          #fi
-          #echo ::set-output name=tags::"$tags"
-
-      - name: Docker meta
-        id: docker_meta
-        uses:  hugopeixoto/ghaction-docker-meta@feature/add-flavor
-        with:
-          tag-edge: true
-          images: |
-            ghcr.io/${{ env.IMAGE_NAME }}
-          tag-semver: |
-            {{version}}
-            {{major}}.{{minor}}
-          flavor: ${{ matrix.dbms }}-${{ steps.docker_gentags.outputs.authprovider }}
-          main-flavor: ${{ matrix.dbms == 'mariadb' && matrix.auth == 'openldap' }}
-
-      - uses: docker/setup-qemu-action@v1
-      - uses: docker/setup-buildx-action@v1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2.1.4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-            
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GH_PAT_PACKAGES }}
-
-      - name: Build
-        uses: docker/build-push-action@v2
-        with:
-          context: app
-          file: app/Dockerfile
-          platforms: ${{ env.DOCKER_PLATFORMS }}
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.docker_meta.outputs.tags }}
-          labels: ${{ steps.docker_meta.outputs.labels }}
-          build-args: |
-            AUTH=${{ matrix.auth }}
-            DBMS=${{ matrix.dbms }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-          
-      - name: Check manifest
-        if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          docker buildx imagetools inspect ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.docker_meta.outputs.version }}-${{ matrix.dbms }}-${{ steps.docker_gentags.outputs.authprovider }}
+#  docker:
+#    needs: [ test, lint ]
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        dbms: [ 'sqlite3', 'mariadb', 'postgres' ]
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Generate docker images tags
+#        id: docker_gentags
+#        run: |
+#
+#          #tags=$(echo -e ${{steps.docker_meta.outputs.tags}} | sed -ne "s/$/-${{ matrix.dbms }}&/p" | tr "\n" "," | sed 's/\(.*\),/\1/')
+#          #if [[ "${{ matrix.dbms == 'mariadb' }}" == "true" ]]; then
+#          #  tags="${tags},${{steps.docker_meta.outputs.tags}}"
+#          #fi
+#          #echo ::set-output name=tags::"$tags"
+#
+#      - name: Docker meta
+#        id: docker_meta
+#        uses:  hugopeixoto/ghaction-docker-meta@feature/add-flavor
+#        with:
+#          tag-edge: true
+#          images: |
+#            ghcr.io/${{ env.IMAGE_NAME }}
+#          tag-semver: |
+#            {{version}}
+#            {{major}}.{{minor}}
+#          flavor: ${{ matrix.dbms }}
+#          main-flavor: ${{ matrix.dbms == 'mariadb'}}
+#
+#      - uses: docker/setup-qemu-action@v1
+#      - uses: docker/setup-buildx-action@v1
+#
+#      - name: Cache Docker layers
+#        uses: actions/cache@v2.1.4
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: ${{ runner.os }}-buildx-${{ github.sha }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-
+#
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v1
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.repository_owner }}
+#          password: ${{ secrets.GH_PAT_PACKAGES }}
+#
+#      - name: Build
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: app
+#          file: app/Dockerfile
+#          platforms: ${{ env.DOCKER_PLATFORMS }}
+#          push: ${{ github.event_name != 'pull_request' }}
+#          tags: ${{ steps.docker_meta.outputs.tags }}
+#          labels: ${{ steps.docker_meta.outputs.labels }}
+#          build-args: |
+#            DBMS=${{ matrix.dbms }}
+#          cache-from: type=local,src=/tmp/.buildx-cache
+#          cache-to: type=local,dest=/tmp/.buildx-cache-new
+#
+#      - name: Move cache
+#        run: |
+#          rm -rf /tmp/.buildx-cache
+#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+#
+#      - name: Check manifest
+#        if: ${{ github.event_name != 'pull_request' }}
+#        run: |
+#          docker buildx imagetools inspect ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.docker_meta.outputs.version }}-${{ matrix.dbms }}

@@ -45,9 +45,9 @@ python manage.py migrate
 # shellcheck disable=SC2198
 if [ -z "${@}" ]; then
   if [ "${DEBUG}" != 0 ]; then
-    gunicorn ${PROJECT_NAME}.wsgi:application --bind 0.0.0.0:8000 --log-level DEBUG
+    gunicorn "${PROJECT_NAME}".asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --log-level DEBUG
   else
-    gunicorn ${PROJECT_NAME}.wsgi:application --bind 0.0.0.0:8000
+    gunicorn "${PROJECT_NAME}".asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
   fi
 else
   exec "${@}"
