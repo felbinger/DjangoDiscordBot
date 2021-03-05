@@ -15,7 +15,8 @@ from django.core.asgi import get_asgi_application
 environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 application = get_asgi_application()
 
+from django.conf import settings  # noqa: E402
+
 from .bot import bot  # noqa: E402
 
-# TODO should be configurable using settings.py
-ensure_future(bot.start(environ.get('DISCORD_BOT_TOKEN')))
+ensure_future(bot.start(settings.DISCORD_BOT_TOKEN))

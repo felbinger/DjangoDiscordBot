@@ -7,7 +7,7 @@
       <env name="PYTHONUNBUFFERED" value="1" />
       <env name=" DEBUG" value="1" />
       <env name="SECRET_KEY" value="s3cr3t_k3y" />
-      <env name="DISCORD_BOT_TOKEN" value="YOUR_BOT_TOKEN" />
+      <env name="DISCORD_BOT_TOKEN" value="YOUR_DISCORD_TOKEN" />
       <env name="DISCORD_BOT_PREFIX" value="." />
     </envs>
     <option name="SDK_HOME" value="/usr/bin/python3.8" />

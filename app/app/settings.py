@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_manager',
-    'log_manager',
+    'user_manager.apps.UserManagerConfig',
+    'log_manager.apps.LogManagerConfig',
 ]
 
 MIDDLEWARE = [
@@ -149,6 +149,10 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+DISCORD_BOT_TOKEN = environ.get('DISCORD_BOT_TOKEN')
+DISCORD_BOT_PREFIX = environ.get('DISCORD_BOT_PREFIX', '')
+DISCORD_BOT_DESCRIPTION = "Django Discord Bot Template"
 
 DISCORD_LOGGING_TRANSCRIPTS_MAX = 2000
 DISCORD_LOGGING_TRANSCRIPTS_DEFAULT = 300

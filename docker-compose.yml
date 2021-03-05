@@ -9,17 +9,6 @@ services:
     volumes:
       - 'postgres-data:/var/lib/postgres/data'
 
-  ldap:
-    image: howardlau1999/openldap-bcrypt
-    restart: always
-    environment:
-      - 'LDAP_ORGANISATION=example.com'
-      - 'LDAP_DOMAIN=example.com'
-      - 'LDAP_ADMIN_PASSWORD=SECRET_PASSWORD'
-    volumes:
-      - 'ldap-data:/var/lib/ldap'
-      - 'ldap-config:/etc/ldap/slapd.d'
-
   app:
     image: nginx:stable-alpine
     restart: always
@@ -29,7 +18,7 @@ services:
       - '8080:80'
     volumes:
       - './resources/nginx.conf:/etc/nginx/conf.d/default.conf'
-      - 'pytemplate-static:/usr/share/nginx/html/static/'
+      - 'django-static:/usr/share/nginx/html/static/'
 
   django:
     build:
@@ -39,27 +28,18 @@ services:
     restart: always
     depends_on:
       - postgres
-      - ldap
     environment:
       - 'SQL_ENGINE=django.db.backends.postgresql'
       - 'SQL_HOST=postgres'
       - 'SQL_USER=postgres'
       - 'SQL_PASSWORD=SECRET_PASSWORD'
       - 'SQL_DATABASE=pytemplate'
-      - 'LDAP_URI=ldap://ldap:389'
-      - 'LDAP_BIND_DN=cn=admin,dc=example,dc=com'
-      - 'LDAP_BIND_PASS=SECRET_PASSWORD'
-      - 'LDAP_USERS=ou=people,dc=example,dc=com'
-      - 'LDAP_GROUPS=ou=groups,dc=example,dc=com'
-      - 'LDAP_GROUP=cn=pytemplate,ou=groups,dc=example,dc=com'
-      - 'LDAP_SUPERGROUP=cn=superuser,cn=pytemplate,ou=groups,dc=example,dc=com'
       - 'ALLOWED_HOSTS=django'
       - 'DEBUG=1'
+      - 'DISCORD_BOT_TOKEN='
     volumes:
-      - 'pytemplate-static:/home/app/web/static'
+      - 'django-static:/home/app/web/static'
 
 volumes:
   postgres-data:
-  ldap-data:
-  ldap-config:
   pytemplate-static:

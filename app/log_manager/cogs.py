@@ -13,6 +13,8 @@ from markupsafe import Markup
 from log_manager.models import Transcript
 from user_manager.models import DiscordGroup, DiscordUser
 
+__all__ = ["LogManager"]
+
 
 @sync_to_async
 def _create_transcript(channel_name: str, created_by: Member, guild_name: str, guild_icon: str, messages: List[Dict]):

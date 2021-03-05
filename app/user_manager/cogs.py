@@ -8,6 +8,8 @@ from django.contrib.auth.models import User, Group
 
 from user_manager.models import DiscordUser, DiscordGroup
 
+__all__ = ["UserManager"]
+
 
 @sync_to_async
 def _create_or_update_user(user_id: int, username: str):
