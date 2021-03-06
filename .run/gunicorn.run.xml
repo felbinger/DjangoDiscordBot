@@ -5,7 +5,7 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
-      <env name=" DEBUG" value="1" />
+      <env name="DEBUG" value="1" />
       <env name="SECRET_KEY" value="s3cr3t_k3y" />
       <env name="DISCORD_BOT_TOKEN" value="YOUR_DISCORD_TOKEN" />
       <env name="DISCORD_BOT_PREFIX" value="." />

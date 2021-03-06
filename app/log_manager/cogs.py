@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Optional, Dict
 import re
 from asgiref.sync import sync_to_async
-from discord import Embed, Guild, Reaction, Member
+from discord import Embed, Guild, Reaction, Member, Role
 from discord.ext.commands import Cog, command, Context, Bot
 from django.conf import settings
 from discord.ext import commands
@@ -102,6 +102,13 @@ class LogManager(Cog):
             await ctx.send(
                 f"Maximum amount of messages have been limited to: {settings.DISCORD_LOGGING_TRANSCRIPTS_MAX}"
             )
+
+        member_roles: List[Role] = [r.name for r in ctx.message.author.roles]
+        if settings.DISCORD_LOGGING_REQUIRED_GROUP not in member_roles:
+            await ctx.send(
+                f"Only users with role {settings.DISCORD_LOGGING_REQUIRED_GROUP} can create transcripts!"
+            )
+            return
 
         # create list of messages
         messages = list()
