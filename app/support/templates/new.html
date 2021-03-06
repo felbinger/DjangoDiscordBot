@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tickets</title>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+              integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+              crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css"
+              integrity="sha512-P5MgMn1jBN01asBgU0z60Qk4QxiXo86+wlFahKrsQf37c9cro517WzVSPPV1tDKzhku2iJ2FVgL67wG03SGnNA=="
+              crossorigin="anonymous" />
+        <style>
+            label {
+                margin-bottom: 0;
+            }
+        </style>
+    </head>
+    <body class="bg-dark">
+        {% include 'navigation.html' %}
+        <div class="container">
+            <div class="card my-3">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 style="margin-bottom: 0;">New Ticket</h5>
+                        <a href="{% url 'support:overview' %}"><i class="fas fa-undo float-right"></i></a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="inputSubject" class="col-sm-2 col-form-label">Subject</label>
+                            <div class="col-sm-10">
+                                {{ form.subject }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputService" class="col-sm-2 col-form-label">Service</label>
+                            <div class="col-sm-10">
+                                {{ form.service }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputDescription" class="col-sm-2 col-form-label">Description</label>
+                            <div class="col-sm-10">
+                                {{ form.description }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                                        Priority {{ form.priority }}
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                                        {{ form.discord_notifications }}
+                                        <label for="inputDiscordNotification">Discord Notifications</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-2 float-right">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+                integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"
+                integrity="sha512-XKa9Hemdy1Ui3KSGgJdgMyYlUg1gM+QhL6cnlyTe2qzMCYm4nAZ1PsVerQzTTXzonUR+dmswHqgJPuwCq1MaAg=="
+                crossorigin="anonymous"></script>
+    </body>
+</html>

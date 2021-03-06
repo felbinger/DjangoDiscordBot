@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Login</title>
+        <title>Django Discord Bot Template</title>
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
               integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
@@ -14,15 +14,7 @@
               crossorigin="anonymous" />
     </head>
     <body class="bg-dark">
-        <div class="container mt-5 text-white">
-            <h1 align="center">Django Discord Bot Template</h1>
-            <h2><a href="/admin">Admin Panel</a></h2>
-            {% if not user.is_authenticated %}
-                <h2><a href="/login">Login</a></h2>
-            {% else %}
-                <h2><a href="/logout">Logout</a></h2>
-            {% endif %}
-        </div>
+        {% include 'navigation.html' %}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
                 integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
                 crossorigin="anonymous"></script>

@@ -8,7 +8,7 @@ from log_manager.models import Transcript
 from user_manager.models import DiscordUser
 
 
-@login_required(login_url="/login")
+@login_required()
 def show(request, transcript_id: uuid4):
     if not request or not request.user or not request.user.is_authenticated:
         return HttpResponseForbidden()
