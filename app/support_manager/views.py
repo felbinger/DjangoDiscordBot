@@ -5,6 +5,10 @@ from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseNotFound, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext as _
+
+from user_manager.models import DiscordUser
+from user_manager.service.event import trigger
 
 from .models import Ticket, Service, Message
 from .forms import TicketForm
@@ -30,9 +34,10 @@ def new(request: WSGIRequest):
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
-            discord_notifications = False
-            if 'discord_notifications' in request.POST and request.POST['discord_notifications'] == 'on':
-                discord_notifications = True
+
+            discord_notifications = 'discord_notifications' in request.POST \
+                and request.POST['discord_notifications'] == 'on'
+
             ticket = Ticket(
                 owner=request.user,
                 subject=request.POST['subject'],
@@ -42,10 +47,24 @@ def new(request: WSGIRequest):
                 discord_notifications=discord_notifications,
             )
             ticket.save()
-            # flash message, clear form by sending an new/empty one
-            return redirect('support:overview')
+
+            trigger(
+                cog_name='support_manager',
+                func_name='send_message',
+                content=_(f"Ticket (#{ticket.id}) has been created!")
+            )
+
+            if discord_notifications and (discord_user := DiscordUser.objects.filter(user=request.user).first()):
+                trigger(
+                    cog_name='support_manager',
+                    func_name='send_dm',
+                    member_id=discord_user.discord_id,
+                    content=_(f"You're ticket (#{ticket.id}) has been created, you will receive updates!")
+                )
+
+            return redirect('support_manager:overview')
         else:
-            messages.error(request, 'Something went wrong...')
+            messages.error(request, _('Something went wrong...'))
 
     data = {
         "form": TicketForm()

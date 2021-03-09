@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 """
 
 from os import environ
-from asyncio import ensure_future
+import asyncio
 
 from django.core.asgi import get_asgi_application
 
@@ -19,4 +19,5 @@ from django.conf import settings  # noqa: E402
 
 from .bot import bot  # noqa: E402
 
-ensure_future(bot.start(settings.DISCORD_BOT_TOKEN))
+loop = asyncio.get_event_loop()
+asyncio.ensure_future(bot.start(settings.DISCORD_BOT_TOKEN))

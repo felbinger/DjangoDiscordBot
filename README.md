@@ -2,6 +2,10 @@
 This template has been created as a proof of concept. The idea is to use structures of django for the discord bot (e.g. groups and permissions).
 The bot offers a simple logging feature. I am going to improve it, if I have some time...
 
+## Features
+* Transcripts (Chat Logging)
+* Simple Support Panel
+
 ## Installation
 First you need to install [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/)  
 After you have started the services (`docker-compose up -d`), you can collect the static files and create a superuser:  

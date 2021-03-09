@@ -1,28 +1,57 @@
+from pathlib import Path
+
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound, HttpResponseForbidden
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required, permission_required
+from django.http import HttpResponseNotFound, HttpResponse, HttpRequest
 from uuid import uuid4
 
+from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views import View
+
 from log_manager.models import Transcript
-from user_manager.models import DiscordUser
 
 
-@login_required()
-def show(request, transcript_id: uuid4):
-    if not request or not request.user or not request.user.is_authenticated:
-        return HttpResponseForbidden()
+class TranscriptsView(View):
 
-    transcript = Transcript.objects.filter(public_id=transcript_id).first()
+    @method_decorator(login_required)
+    @method_decorator(permission_required('log_manager.view_transcript'))
+    def get(self, request: HttpRequest):
+        return render(request, "transcripts.html", context={
+            "transcripts": [
+                {
+                    "id": t.public_id,
+                    "channel_name": t.channel_name,
+                    "created": t.created,
+                } for t in Transcript.objects.all()
+            ]
+        })
 
-    if not transcript:
-        return HttpResponseNotFound()
 
-    user = DiscordUser.objects.filter(user=request.user).first()
+class TranscriptView(View):
+    @method_decorator(login_required)
+    @method_decorator(permission_required('log_manager.view_transcript'))
+    def get(self, request: HttpRequest, transcript_id: uuid4):
+        transcript = Transcript.objects.filter(public_id=transcript_id).first()
+        f = Path(f'{settings.BASE_DIR}/media/transcripts/{transcript_id}.html')
 
-    # if user does not belong to team (does not have staff status (for django native users) or team discord role)
-    if not request.user.is_staff and \
-            (user and not user.user.groups.filter(name=settings.DISCORD_LOGGING_REQUIRED_GROUP).exists()):
-        return HttpResponseForbidden()
+        if not transcript or not f.is_file():
+            return HttpResponseNotFound()
 
-    return render(request, f'transcripts/{transcript_id}.html')
+        with f.open('r') as f:
+            return HttpResponse(f.read())
+
+    @method_decorator(login_required)
+    @method_decorator(permission_required('log_manager.delete_transcript'))
+    def delete(self, request: HttpRequest, transcript_id: uuid4):
+        transcript = Transcript.objects.filter(public_id=transcript_id).first()
+
+        f = Path(f'{settings.BASE_DIR}/media/transcripts/{transcript_id}.html')
+        if f.is_file():
+            f.unlink(missing_ok=True)
+
+        if not transcript:
+            return HttpResponseNotFound()
+
+        transcript.delete()
+        return HttpResponse(status=204)

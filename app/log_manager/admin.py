@@ -3,7 +3,7 @@ from .models import Transcript
 
 
 class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ('channel_name', 'created', 'readable_by',)
+    list_display = ('channel_name', 'created',)
 
 
 admin.site.register(Transcript, TranscriptAdmin)

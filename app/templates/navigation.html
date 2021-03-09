@@ -6,9 +6,10 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'support:overview' %}">Support</span></a>
-      </li>
+      <li class="nav-item active"><a class="nav-link" href="{% url 'support_manager:overview' %}">Support</span></a></li>
+      {% if perms.log_manager.view_transcript %}
+      <li class="nav-item active"><a class="nav-link" href="{% url 'log_manager:show_all' %}">Transcripts</span></a></li>
+      {% endif %}
     </ul>
     {% if user.is_authenticated %}
     <ul class="navbar-nav ml-auto">

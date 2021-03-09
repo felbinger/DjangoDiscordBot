@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('status', models.IntegerField(choices=[(0, 'Open'), (1, 'Pending'), (2, 'Closed')], default=0, verbose_name='status')),
                 ('priority', models.IntegerField(choices=[(0, 'Low'), (1, 'Normal'), (2, 'High')], default=0, verbose_name='priority')),
                 ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ticket_service', to='support.service')),
+                ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ticket_service', to='support_manager.service')),
                 ('discord_notifications', models.BooleanField(default=False, verbose_name='discord_notifications'),)
             ],
         ),
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('from_team', models.BooleanField(default=True)),
                 ('created', models.DateTimeField(default=django.utils.timezone.now)),
                 ('content', models.TextField()),
-                ('ticket', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='ticket_messages', to='support.ticket')),
+                ('ticket', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='ticket_messages', to='support_manager.ticket')),
             ],
         ),
     ]

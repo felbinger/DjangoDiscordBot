@@ -1,9 +1,9 @@
 from typing import Optional
 
 from asgiref.sync import sync_to_async
-from discord import Guild, Role, Embed, Member
+from discord import Guild, Role, Member
 from discord.ext import commands
-from discord.ext.commands import Cog, Bot, command
+from discord.ext.commands import Cog, Bot
 from django.contrib.auth.models import User, Group
 
 from user_manager.models import DiscordUser, DiscordGroup
@@ -41,7 +41,7 @@ def _delete_group(group_id: int):
     discord_group.delete()
 
 
-class UserManager(Cog):
+class UserManager(Cog, name='user_manager'):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.guild: Optional[Guild] = None
@@ -54,15 +54,6 @@ class UserManager(Cog):
 
         for member in self.guild.members:
             await _create_or_update_user(member.id, member.name)
-
-    @command(name="user_log", aliases=["ulog"])
-    async def user_log(self, ctx):
-        await ctx.send(
-            embed=Embed(
-                title="User Information",
-                description="content"
-            )
-        )
 
     @commands.Cog.listener()
     async def on_member_join(self, member: Member):

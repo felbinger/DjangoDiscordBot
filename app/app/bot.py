@@ -30,4 +30,3 @@ for app in settings.INSTALLED_APPS:
     for cog in loaded_cog.__all__:
         exec(f'from {app_name}.cogs import {cog}')
         bot.add_cog(eval(cog)(bot))
-

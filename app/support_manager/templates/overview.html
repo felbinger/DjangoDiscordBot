@@ -25,7 +25,7 @@
                                 <th scope="col">Subject</th>
                                 <th scope="col">Service</th>
                                 <th scope="col">Status</th>
-                                <th scope="col"><a href="{% url 'support:new' %}"><i class="fas fa-plus"></i></a></th>
+                                <th scope="col"><a href="{% url 'support_manager:new' %}"><i class="fas fa-plus"></i></a></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,7 +35,7 @@
                                     <td>{{ ticket.subject }}</td>
                                     <td>{{ ticket.service }}</td>
                                     <td>{{ ticket.status }}</td>
-                                    <td><a href="{% url 'support:edit' ticket.id %}"><i class="fas fa-pen"></i></a></td>
+                                    <td><a href="{% url 'support_manager:edit' ticket.id %}"><i class="fas fa-pen"></i></a></td>
                                 </tr>
                             {% endfor %}
                         </tbody>

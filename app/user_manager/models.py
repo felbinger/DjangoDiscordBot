@@ -7,7 +7,10 @@ class DiscordUser(models.Model):
         verbose_name = "User"
 
     discord_id = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="django_user", blank=True, null=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name="django_user", blank=True, null=True
+    )
 
     def __str__(self):
         ret = str(self.discord_id)
@@ -21,7 +24,10 @@ class DiscordGroup(models.Model):
         verbose_name = "Group"
 
     discord_id = models.IntegerField()
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="django_group", blank=True, null=True)
+    group = models.ForeignKey(
+        Group, on_delete=models.CASCADE,
+        related_name="django_group", blank=True, null=True
+    )
 
     def __str__(self):
         ret = str(self.discord_id)

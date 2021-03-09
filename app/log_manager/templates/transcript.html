@@ -1,10 +1,12 @@
+{% load custom_filter %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ guild['name'] }} - #{{ channel_name }}</title>
+    <title>{{ guild.name }} - #{{ channel_name }}</title>
     <meta charset=utf-8>
     <meta name=viewport content="width=device-width">
-    <style>@font-face {
+    <style>
+        @font-face {
         font-family: Whitney;
         src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
         font-weight: 300
@@ -365,7 +367,8 @@
         position: relative;
         top: -.2em
     }</style>
-    <style>body {
+    <style>
+        body {
         background-color: #36393e;
         color: #dcddde
     }
@@ -475,64 +478,64 @@
 <body>
 <div class=info>
     <div class=info__guild-icon-container>
-        <img class=info__guild-icon src="{{ guild['icon'] }}">
+        <img class=info__guild-icon src="{{ guild.icon }}">
     </div>
     <div class=info__metadata>
-        <div class=info__guild-name>{{ guild['name'] }}</div>
+        <div class=info__guild-name>{{ guild.name }}</div>
         <div class=info__channel-name>#{{ channel_name }}</div>
-        <div class=info__channel-message-count>{{ messages|length }} Nachricht{% if messages|length > 1 %}en{% endif %}</div>
+        <div class=info__channel-message-count>{{ messages|length }} Message{% if messages|length > 1 %}s{% endif %}</div>
     </div>
 </div>
 <div class=chatlog>
     {% for msg in messages %}
         <div class=chatlog__message-group>
             <div class=chatlog__author-avatar-container>
-                <img class=chatlog__author-avatar src="{{ msg['author']['avatar'] }}">
+                <img class=chatlog__author-avatar src="{{ msg.author.avatar }}">
             </div>
             <div class=chatlog__messages>
-                <span class=chatlog__author-name title="{{ msg['author']['name'] }}"
-                      data-user-id="{{ msg['author']['id'] }}">{{ msg['author']['name'] }}</span>
-                {% if msg["bot"] == True %}
+                <span class=chatlog__author-name title="{{ msg.authorname }}"
+                      data-user-id="{{ msg.author.id }}">{{ msg.author.name }}</span>
+                {% if msg.bot == True %}
                     <span class=chatlog__bot-tag>BOT</span>
                 {% endif %}
-                {% for a in msg['attachments'] %}
+                {% for a in msg.attachments %}
                     <div class=chatlog__attachment>
-                        {% set splitted = a['url'].split('/') %}
-                        <a href="{{ a['url'] }}">Attachment: {{ splitted[splitted|length - 1] }} {{ a['size'] }}</a>
+                        {#{% set splitted = a.url.split('/') %}#}
+                        {#<a href="{{ a.url }}">Attachment: {{ splitted[splitted|length - 1] }} {{ a.size }}</a>#}
                     </div>
                 {% endfor %}
-                {% if msg['content'] %}
-                    <span class=chatlog__timestamp>{{ msg['timestamp'] }}</span>
-                    <div class=chatlog__message id=message-{{ msg['id'] }} data-message-id={{ msg['id'] }}>
+                {% if msg.content %}
+                    <span class=chatlog__timestamp>{{ msg.timestamp }}</span>
+                    <div class=chatlog__message id=message-{{ msg.id }} data-message-id={{ msg.id }}>
                     <div class=chatlog__content>
-                        <p><span>{{ msg['content']|regexr|markdown }}</span></p>
+                        <p><span>{{ msg.content|regexr|markdown }}</span></p>
                         <span></span>
                     </div>
                 {% endif %}
-                {% for e in msg['embeds'] %}
+                {% for e in msg.embeds %}
                     <div class=chatlog__embed>
-                        <div class=chatlog__embed-color-pill style=background-color:{{ e['color'] }}></div>
+                        <div class=chatlog__embed-color-pill style=background-color:{{ e.color }}></div>
                         <div class=chatlog__embed-content-container>
                             <div class=chatlog__embed-content>
                                 <div class=chatlog__embed-text>
-                                    <div class=chatlog__embed-title><span class=markdown>{{ e['title']|markdown }}</span></div>
+                                    <div class=chatlog__embed-title><span class=markdown>{{ e.title|markdown }}</span></div>
                                     <div class=chatlog__embed-description><p><span
-                                            class=markdown>{{ e['description']|regexr|markdown }}</span></p></div>
-                                    {% if e['fields'] %}
+                                            class=markdown>{{ e.description|regexr|markdown }}</span></p></div>
+                                    {% if e.fields %}
                                         <div class=chatlog__embed-fields>
-                                            {% for f in e['fields'] %}
+                                            {% for f in e.fields %}
                                                 <div class=chatlog__embed-field-name><span
-                                                        class=markdown>{{ f['title']|markdown }} </span></div><br>
+                                                        class=markdown>{{ f.title|markdown }} </span></div><br>
                                                 <div class=chatlog__embed-field-value><p><span
-                                                        class=markdown>{{ f['description']|regexr|markdown }}</span></p></div>
+                                                        class=markdown>{{ f.description|regexr|markdown }}</span></p></div>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
-                                {% if e['thumbnail'] %}
+                                {% if e.thumbnail %}
                                     <div class=chatlog__embed-thumbnail-container>
                                         <a class=chatlog__embed-thumbnail-link>
-                                            <img class=chatlog__embed-thumbnail src="{{ e['thumbnail'] }}">
+                                            <img class=chatlog__embed-thumbnail src="{{ e.thumbnail }}">
                                         </a>
                                     </div>
                                 {% endif %}
@@ -542,11 +545,11 @@
                 {% endfor %}
                 <div class=chatlog__reactions>
                     <div class=chatlog__reactions>
-                        {% for reaction in msg['reactions'] %}
+                        {% for reaction in msg.reactions %}
                             <div class=chatlog__reaction>
                                 <img class=emoji--small alt="{{ reaction.emoji }}" title="{{ reaction.emoji }}"
                                      src="{{ reaction.src }}"><span
-                                    class=chatlog__reaction-count>{{ reaction["count"] }}</span>
+                                    class=chatlog__reaction-count>{{ reaction.count }}</span>
                             </div>
                         {% endfor %}
                     </div>

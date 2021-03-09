@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = environ.get('SECRET_KEY', repr(''.join([
-   random.SystemRandom().choice(
-       ascii_letters + digits + punctuation
-   ) for i in range(random.randint(45, 50))])
+    random.SystemRandom().choice(
+        ascii_letters + digits + punctuation
+    ) for i in range(random.randint(45, 50))])
 ))
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -43,9 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'user_manager.apps.UserManagerConfig',
     'log_manager.apps.LogManagerConfig',
-    'support.apps.SupportConfig'
+    'support_manager.apps.SupportConfig'
 ]
 
 MIDDLEWARE = [
@@ -141,6 +142,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media/'
 
 APPEND_SLASH = True
 
@@ -151,10 +154,13 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
+PUBLIC_URL = "127.0.0.1:8000"
+SCHEMA = "http"
+
 DISCORD_BOT_TOKEN = environ.get('DISCORD_BOT_TOKEN')
-DISCORD_BOT_PREFIX = environ.get('DISCORD_BOT_PREFIX', '.')
+DISCORD_BOT_PREFIX = environ.get('DISCORD_BOT_PREFIX', '.')   # <-- TODO should be in database
 DISCORD_BOT_DESCRIPTION = "Django Discord Bot Template"
 
+DISCORD_LOGGING_CHANNEL = 818929140698841119   # <-- TODO should be in database
 DISCORD_LOGGING_TRANSCRIPTS_MAX = 2000
 DISCORD_LOGGING_TRANSCRIPTS_DEFAULT = 300
-DISCORD_LOGGING_REQUIRED_GROUP = "Team"
