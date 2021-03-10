@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from uuid import uuid4
 
-from user_manager.models import DiscordUser
+from base_app.models import DiscordUser
 
 
 class Transcript(models.Model):

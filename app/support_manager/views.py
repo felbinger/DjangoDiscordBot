@@ -7,8 +7,8 @@ from django.http import HttpResponseNotFound, HttpResponseForbidden, HttpRespons
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 
-from user_manager.models import DiscordUser
-from user_manager.service.event import trigger
+from base_app.models import DiscordUser
+from base_app.service.event import trigger
 
 from .models import Ticket, Service, Message
 from .forms import TicketForm

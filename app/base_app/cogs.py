@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog, Bot
 from django.contrib.auth.models import User, Group
 
-from user_manager.models import DiscordUser, DiscordGroup
+from base_app.models import DiscordUser, DiscordGroup
 
 __all__ = ["UserManager"]
 
@@ -58,7 +58,7 @@ def _user_remove_group(user_id: str, role_id: str):
     discord_group.group.user_set.remove(discord_user.user)
 
 
-class UserManager(Cog, name='user_manager'):
+class UserManager(Cog, name='base_app'):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.guild: Optional[Guild] = None

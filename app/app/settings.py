@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'user_manager.apps.UserManagerConfig',
+    'base_app.apps.BaseAppConfig',
     'log_manager.apps.LogManagerConfig',
     'support_manager.apps.SupportConfig'
 ]

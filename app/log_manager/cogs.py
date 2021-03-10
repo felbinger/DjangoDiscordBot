@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from log_manager.models import Transcript
-from user_manager.models import DiscordUser
+from base_app.models import DiscordUser
 
 __all__ = ["LogManager"]
 
