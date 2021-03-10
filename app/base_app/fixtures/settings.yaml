@@ -1,0 +1,11 @@
+- model: base_app.Settings
+  pk: 1
+  fields:
+    key: transcript_amount
+    value: 300
+
+- model: base_app.Settings
+  pk: 2
+  fields:
+    key: logging_channel
+    value: 818929140698841119

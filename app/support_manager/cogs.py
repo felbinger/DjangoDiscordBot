@@ -5,7 +5,7 @@ from discord.ext import commands
 
 __all__ = ["SupportManager"]
 
-from django.conf import settings
+from base_app.models import Settings
 
 
 class SupportManager(Cog, name='support_manager'):
@@ -19,7 +19,10 @@ class SupportManager(Cog, name='support_manager'):
         self.guild: Optional[Guild] = self.bot.guilds[0]
 
     async def send_message(self, content):
-        await self.guild.get_channel(settings.DISCORD_LOGGING_CHANNEL).send(content)
+        channel = Settings.objects.filter(key="logging_channel").first()
+        if not channel:
+            return
+        await self.guild.get_channel(channel).send(content)
 
     async def send_dm(self, member_id, content: str):
         await self.guild.get_member(member_id).send(content)

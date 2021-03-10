@@ -15,8 +15,9 @@
     </head>
     <body class="bg-dark">
         {% include 'navigation.html' %}
-        <div class="container">
-            <div class="card my-3">
+        <div class="container my-3">
+            {% if transcripts %}
+            <div class="card">
                 <h5 class="card-header" style="text-align: center;">Transcripts</h5>
                 <div class="card-body">
                     <ul>
@@ -26,6 +27,9 @@
                     </ul>
                 </div>
             </div>
+            {% else %}
+            <p>Currently no transcripts exist, you can create a new transcript using the discord bot command <code>.save</code>.</p>
+            {% endif %}
         </div>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
                 integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

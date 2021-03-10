@@ -8,7 +8,7 @@ from django.contrib.auth.models import User, Group
 
 from base_app.models import DiscordUser, DiscordGroup
 
-__all__ = ["UserManager"]
+__all__ = ["BaseApp"]
 
 
 def _create_or_update(outer_cls, outer_attr, inner_cls, inner_attr, discord_id, name):
@@ -58,7 +58,7 @@ def _user_remove_group(user_id: str, role_id: str):
     discord_group.group.user_set.remove(discord_user.user)
 
 
-class UserManager(Cog, name='base_app'):
+class BaseApp(Cog, name='base_app'):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.guild: Optional[Guild] = None
@@ -71,6 +71,8 @@ class UserManager(Cog, name='base_app'):
 
         for member in self.guild.members:
             await _create_or_update_user(member.id, member.name)
+            for role in member.roles:
+                await _user_add_group(member.id, role.id)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: Member):

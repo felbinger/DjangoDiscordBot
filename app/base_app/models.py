@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth.models import Group, User
 
 
+class Settings(models.Model):
+
+    class Meta:
+        verbose_name_plural = "Settings"
+
+    key = models.CharField(max_length=128)
+    value = models.CharField(max_length=1024)
+
+    def __str__(self):
+        return f"{self.key}: {self.value}"
+
+
 class DiscordUser(models.Model):
     class Meta:
         verbose_name = "User"

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'oauth2_provider',
     'base_app.apps.BaseAppConfig',
     'log_manager.apps.LogManagerConfig',
     'support_manager.apps.SupportConfig'
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -149,9 +151,11 @@ APPEND_SLASH = True
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    'oauth2_provider.backends.OAuth2Backend',
 ]
 
 # accounts module
+LOGIN_URL = 'base_app:discord_oauth'
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
@@ -159,18 +163,20 @@ LOGOUT_REDIRECT_URL = "/"
 LOCALE_PATHS = [
     BASE_DIR.joinpath('locale')
 ]
-LANGUAGE_CODE = 'en-us'
 
 # public url of the api
 PUBLIC_URL = environ.get("PUBLIC_URL", "127.0.0.1:8000")
 SCHEMA = environ.get("SCHEMA", "http")
 
+# OAuth Settings
+OAUTH_URL = environ.get('OAUTH_URL')
+OAUTH_CLIENT_ID = environ.get("OAUTH_CLIENT_ID")
+OAUTH_CLIENT_SECRET = environ.get('OAUTH_CLIENT_SECRET')
+
 # discord settings
 DISCORD_BOT_TOKEN = environ.get('DISCORD_BOT_TOKEN')
-DISCORD_BOT_DESCRIPTION = "Django Discord Bot Template"
-DISCORD_LOGGING_TRANSCRIPTS_MAX = 2000
-
-# TODO should be in database (all following keys)
 DISCORD_BOT_PREFIX = environ.get('DISCORD_BOT_PREFIX', '.')
-DISCORD_LOGGING_CHANNEL = 818929140698841119
-DISCORD_LOGGING_TRANSCRIPTS_DEFAULT = 300
+DISCORD_BOT_DESCRIPTION = "Django Discord Bot Template"
+
+# bot settings
+DISCORD_LOGGING_TRANSCRIPTS_MAX = 2000

@@ -3,6 +3,7 @@ from typing import List, Optional, Dict
 import re
 from asgiref.sync import sync_to_async
 from discord import Embed, Guild, Reaction, Member
+from discord.abc import PrivateChannel
 from discord.ext import commands
 from discord.ext.commands import Cog, command, Context, Bot
 from django.conf import settings
@@ -11,7 +12,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from log_manager.models import Transcript
-from base_app.models import DiscordUser
+from base_app.models import DiscordUser, Settings
 
 __all__ = ["LogManager"]
 
@@ -85,26 +86,33 @@ class LogManager(Cog, name="log_manager"):
         if ctx.message.author.bot:
             return
 
+        if not await _has_create_transcripts_permission(ctx.message.author.name):
+            await ctx.send(
+                _("You aren't allowed to create transcripts!")
+            )
+            return
+
+        if isinstance(ctx.channel, PrivateChannel):
+            await ctx.send(
+                _("You can't create transcripts of dm channel!")
+            )
+            return
+
+        db_message_amount = Settings.objects.filter(key="transcript_amount").first()
         if not message_amount:
-            message_amount = settings.DISCORD_LOGGING_TRANSCRIPTS_DEFAULT
+            message_amount = db_message_amount or 100
 
         if type(message_amount) == str:
             await ctx.send(
-                _(f"Not a number, using default: {settings.DISCORD_LOGGING_TRANSCRIPTS_DEFAULT}")
+                _(f"Not a number, using default: {db_message_amount}")
             )
-            message_amount = settings.DISCORD_LOGGING_TRANSCRIPTS_DEFAULT
+            message_amount = db_message_amount or 100
 
         if int(message_amount) > settings.DISCORD_LOGGING_TRANSCRIPTS_MAX:
             message_amount = settings.DISCORD_LOGGING_TRANSCRIPTS_MAX
             await ctx.send(
                 _(f"Maximum amount of messages have been limited to: {settings.DISCORD_LOGGING_TRANSCRIPTS_MAX}")
             )
-
-        if not await _has_create_transcripts_permission(ctx.message.author.name):
-            await ctx.send(
-                _("You aren't allowed to create transcripts!")
-            )
-            return
 
         # create list of messages
         messages = list()

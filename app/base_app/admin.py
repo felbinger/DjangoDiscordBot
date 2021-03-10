@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.models import User, Group
+from oauth2_provider.models import AccessToken, Application, Grant, RefreshToken
 
-from .models import DiscordGroup, DiscordUser
+from .models import DiscordGroup, DiscordUser, Settings
 
 
 class DiscordUserAdmin(admin.StackedInline):
@@ -39,3 +40,10 @@ admin.site.unregister(User)
 admin.site.unregister(Group)
 admin.site.register(User, MyUserAdmin)
 admin.site.register(Group, MyGroupAdmin)
+admin.site.register(Settings)
+
+# remove oauth provider from admin
+admin.site.unregister(AccessToken)
+admin.site.unregister(Application)
+admin.site.unregister(Grant)
+admin.site.unregister(RefreshToken)
