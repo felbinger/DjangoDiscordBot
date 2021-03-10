@@ -1,13 +1,13 @@
 version: '3.9'
 services:
-  postgres:
-    image: postgres
+  mariadb:
+    image: mariadb
     restart: always
     environment:
-      - 'POSTGRES_PASSWORD=SECRET_PASSWORD'
-      - 'POSTGRES_DB=pytemplate'
+      - 'MYSQL_ROOT_PASSWORD=SECRET_PASSWORD'
+      - 'MYSQL_DATABASE=ddbt'
     volumes:
-      - 'postgres-data:/var/lib/postgres/data'
+      - 'mariadb-data:/var/lib/mysql'
 
   app:
     image: nginx:stable-alpine
@@ -24,22 +24,25 @@ services:
     build:
       context: app
       args:
-       - 'DBMS=postgres' 
+       - 'DBMS=mariadb'
     restart: always
     depends_on:
-      - postgres
+      - mariadb
     environment:
-      - 'SQL_ENGINE=django.db.backends.postgresql'
-      - 'SQL_HOST=postgres'
-      - 'SQL_USER=postgres'
+      - 'SQL_HOST=mariadb'
+      - 'SQL_USER=mariadb'
       - 'SQL_PASSWORD=SECRET_PASSWORD'
-      - 'SQL_DATABASE=pytemplate'
+      - 'SQL_DATABASE=ddbt'
       - 'ALLOWED_HOSTS=django'
       - 'DEBUG=1'
       - 'DISCORD_BOT_TOKEN='
+      - 'OAUTH_CLIENT_ID='
+      - 'OAUTH_CLIENT_SECRET='
+      - 'OAUTH_URL='
+      - 'PUBLIC_URL=localhost:8080'
     volumes:
       - 'django-static:/home/app/web/static'
 
 volumes:
-  postgres-data:
-  pytemplate-static:
+  mariadb-data:
+  django-static:

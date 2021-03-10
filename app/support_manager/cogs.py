@@ -5,7 +5,7 @@ from discord.ext import commands
 
 __all__ = ["SupportManager"]
 
-from base_app.models import Settings
+from base_app.service.settings import get_setting
 
 
 class SupportManager(Cog, name='support_manager'):
@@ -19,7 +19,7 @@ class SupportManager(Cog, name='support_manager'):
         self.guild: Optional[Guild] = self.bot.guilds[0]
 
     async def send_message(self, content):
-        channel = Settings.objects.filter(key="logging_channel").first()
+        channel = await get_setting("logging_channel")
         if not channel:
             return
         await self.guild.get_channel(channel).send(content)

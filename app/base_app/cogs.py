@@ -103,3 +103,11 @@ class BaseApp(Cog, name='base_app'):
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role: Role):
         await _delete_group(role.id)
+
+    # trigger('base_app', 'add_member_to_role', 'user_id', 'role_id')
+    async def add_member_to_role(self, member_id: int, role_id: int):
+        self.guild.get_member(member_id).add_roles(role_id)
+
+    # trigger('base_app', 'remove_member_from_role', 'user_id', 'role_id')
+    async def remove_member_from_role(self, member_id: int, role_id: int):
+        self.guild.get_member(member_id).remove_roles(role_id)

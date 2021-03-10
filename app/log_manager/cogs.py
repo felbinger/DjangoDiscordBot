@@ -11,8 +11,9 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from base_app.service.settings import get_setting
 from log_manager.models import Transcript
-from base_app.models import DiscordUser, Settings
+from base_app.models import DiscordUser
 
 __all__ = ["LogManager"]
 
@@ -98,15 +99,15 @@ class LogManager(Cog, name="log_manager"):
             )
             return
 
-        db_message_amount = Settings.objects.filter(key="transcript_amount").first()
+        db_message_amount = await get_setting("transcript_amount")
         if not message_amount:
-            message_amount = db_message_amount or 100
+            message_amount = int(db_message_amount) or 100
 
-        if type(message_amount) == str:
+        if type(message_amount) == str and not message_amount.isdigit():
             await ctx.send(
                 _(f"Not a number, using default: {db_message_amount}")
             )
-            message_amount = db_message_amount or 100
+            message_amount = int(db_message_amount) or 100
 
         if int(message_amount) > settings.DISCORD_LOGGING_TRANSCRIPTS_MAX:
             message_amount = settings.DISCORD_LOGGING_TRANSCRIPTS_MAX
@@ -116,7 +117,9 @@ class LogManager(Cog, name="log_manager"):
 
         # create list of messages
         messages = list()
-        async for msg in ctx.channel.history(limit=message_amount, oldest_first=False):
+        message_counter = 0
+        async for msg in ctx.channel.history(limit=int(message_amount), oldest_first=False):
+            message_counter += 1
             messages.append({
                 "id": msg.id,
                 "bot": msg.author.bot,
@@ -170,6 +173,6 @@ class LogManager(Cog, name="log_manager"):
         await ctx.send(
             embed=Embed(
                 title=_("Transcript has been created!"),
-                description=_(f"The latest {message_amount} message have been saved to: {url}")
+                description=_(f"The latest {message_counter} message have been saved to: {url}")
             )
         )
