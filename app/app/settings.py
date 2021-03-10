@@ -151,16 +151,26 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# accounts module
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-PUBLIC_URL = "127.0.0.1:8000"
-SCHEMA = "http"
+# translations
+LOCALE_PATHS = [
+    BASE_DIR.joinpath('locale')
+]
+LANGUAGE_CODE = 'en-us'
 
+# public url of the api
+PUBLIC_URL = environ.get("PUBLIC_URL", "127.0.0.1:8000")
+SCHEMA = environ.get("SCHEMA", "http")
+
+# discord settings
 DISCORD_BOT_TOKEN = environ.get('DISCORD_BOT_TOKEN')
-DISCORD_BOT_PREFIX = environ.get('DISCORD_BOT_PREFIX', '.')   # <-- TODO should be in database
 DISCORD_BOT_DESCRIPTION = "Django Discord Bot Template"
-
-DISCORD_LOGGING_CHANNEL = 818929140698841119   # <-- TODO should be in database
 DISCORD_LOGGING_TRANSCRIPTS_MAX = 2000
+
+# TODO should be in database (all following keys)
+DISCORD_BOT_PREFIX = environ.get('DISCORD_BOT_PREFIX', '.')
+DISCORD_LOGGING_CHANNEL = 818929140698841119
 DISCORD_LOGGING_TRANSCRIPTS_DEFAULT = 300

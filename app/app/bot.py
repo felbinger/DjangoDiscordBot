@@ -10,7 +10,7 @@ bot = Bot(
     command_prefix=settings.DISCORD_BOT_PREFIX,
     case_insensitive=True,
     description=settings.DISCORD_BOT_DESCRIPTION,
-    intents=(Intents.all()),
+    intents=Intents.all(),
 )
 
 for app in settings.INSTALLED_APPS:
