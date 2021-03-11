@@ -41,8 +41,6 @@ python3 app/manage.py loaddata app/base_app/fixtures/settings
    ![](./resources/img/discord_oauth2_redirect_url.png)
 
 ## Productive Setup
-> Currently, it's not possible to build the docker image! 
-
 1. Install [docker](https://docs.docker.com/engine/install/)
 2. Install [docker-compose](https://docs.docker.com/compose/install/)  
 3. Adjust the environment variables in [`docker-compose.yml`](./docker-compose.yml)  

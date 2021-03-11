@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: felbinger/djangodiscordbot
+  IMAGE_NAME: felbinger/ddbt
   DOCKER_PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
   PYTHON_VERSION: 3.9
 
@@ -134,77 +134,66 @@ jobs:
 #          SQL_DATABASE: app
 #        run: python app/manage.py test --no-input --settings app.settings
 
-#  docker:
-#    needs: [ test, lint ]
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        dbms: [ 'sqlite3', 'mariadb', 'postgres' ]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: Generate docker images tags
-#        id: docker_gentags
-#        run: |
-#
-#          #tags=$(echo -e ${{steps.docker_meta.outputs.tags}} | sed -ne "s/$/-${{ matrix.dbms }}&/p" | tr "\n" "," | sed 's/\(.*\),/\1/')
-#          #if [[ "${{ matrix.dbms == 'mariadb' }}" == "true" ]]; then
-#          #  tags="${tags},${{steps.docker_meta.outputs.tags}}"
-#          #fi
-#          #echo ::set-output name=tags::"$tags"
-#
-#      - name: Docker meta
-#        id: docker_meta
-#        uses:  hugopeixoto/ghaction-docker-meta@feature/add-flavor
-#        with:
-#          tag-edge: true
-#          images: |
-#            ghcr.io/${{ env.IMAGE_NAME }}
-#          tag-semver: |
-#            {{version}}
-#            {{major}}.{{minor}}
-#          flavor: ${{ matrix.dbms }}
-#          main-flavor: ${{ matrix.dbms == 'mariadb'}}
-#
-#      - uses: docker/setup-qemu-action@v1
-#      - uses: docker/setup-buildx-action@v1
-#
-#      - name: Cache Docker layers
-#        uses: actions/cache@v2.1.4
-#        with:
-#          path: /tmp/.buildx-cache
-#          key: ${{ runner.os }}-buildx-${{ github.sha }}
-#          restore-keys: |
-#            ${{ runner.os }}-buildx-
-#
-#      - name: Login to GitHub Container Registry
-#        uses: docker/login-action@v1
-#        with:
-#          registry: ghcr.io
-#          username: ${{ github.repository_owner }}
-#          password: ${{ secrets.GH_PAT_PACKAGES }}
-#
-#      - name: Build
-#        uses: docker/build-push-action@v2
-#        with:
-#          context: app
-#          file: app/Dockerfile
-#          platforms: ${{ env.DOCKER_PLATFORMS }}
-#          push: ${{ github.event_name != 'pull_request' }}
-#          tags: ${{ steps.docker_meta.outputs.tags }}
-#          labels: ${{ steps.docker_meta.outputs.labels }}
-#          build-args: |
-#            DBMS=${{ matrix.dbms }}
-#          cache-from: type=local,src=/tmp/.buildx-cache
-#          cache-to: type=local,dest=/tmp/.buildx-cache-new
-#
-#      - name: Move cache
-#        run: |
-#          rm -rf /tmp/.buildx-cache
-#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-#
-#      - name: Check manifest
-#        if: ${{ github.event_name != 'pull_request' }}
-#        run: |
-#          docker buildx imagetools inspect ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.docker_meta.outputs.version }}-${{ matrix.dbms }}
+  docker:
+    needs: [ lint ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dbms: [ 'sqlite3', 'mariadb', 'postgres' ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker meta
+        id: docker_meta
+        uses:  hugopeixoto/ghaction-docker-meta@feature/add-flavor
+        with:
+          tag-edge: true
+          images: |
+            ghcr.io/${{ env.IMAGE_NAME }}
+          tag-semver: |
+            {{version}}
+            {{major}}.{{minor}}
+          flavor: ${{ matrix.dbms }}
+          main-flavor: ${{ matrix.dbms == 'mariadb'}}
+
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2.1.4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_PAT_PACKAGES }}
+
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: app
+          file: app/Dockerfile
+          platforms: ${{ env.DOCKER_PLATFORMS }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          build-args: |
+            DBMS=${{ matrix.dbms }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Check manifest
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          docker buildx imagetools inspect ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.docker_meta.outputs.version }}-${{ matrix.dbms }}

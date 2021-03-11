@@ -7,7 +7,7 @@ ARG DBMS
 WORKDIR /build
 
 RUN apk update \
- && apk add gcc python3-dev musl-dev jpeg-dev zlib-dev
+ && apk add gcc make python3-dev musl-dev jpeg-dev zlib-dev
 
 # install database dependencies
 RUN if [[ "${DBMS}" == "postgres" ]]; then apk add postgresql-dev; fi
