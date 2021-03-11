@@ -8,7 +8,7 @@ on:
 
 env:
   IMAGE_NAME: felbinger/ddbt
-  DOCKER_PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
+  DOCKER_PLATFORMS: linux/amd64 #,linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
   PYTHON_VERSION: 3.9
 
 jobs:
