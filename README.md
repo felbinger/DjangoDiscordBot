@@ -10,11 +10,11 @@ Thanks to [@Paul-Brauckmann](https://github.com/Paul-Brauckmann) for the great i
 ## Features
 * Sign on with Discord  
   ![](./resources/img/discord_oauth_login.png)
-* Transcripts (Chat Logging)
-  ![](./resources/img/transcripts.png)
+* Transcripts (Chat Logging)  
+  ![](./resources/img/transcripts.png)  
   ![](./resources/img/transcript.png)
-* Simple Support Panel
-  ![](./resources/img/create_ticket.png)
+* Simple Support Panel  
+  ![](./resources/img/create_ticket.png)  
   ![](./resources/img/ticket_overview.png)
 
 ## Development Setup
@@ -24,20 +24,20 @@ python3 app/manage.py migrate
 python3 app/manage.py loaddata app/base_app/fixtures/settings
 ```
 2. Open the [Discord Developer Portal](https://discord.com/developers)
-3. Click on the 'New Application' button and give the bot a name:
+3. Click on the 'New Application' button and give the bot a name:  
    ![](./resources/img/discord_new_application.png)
-4. Now open the Bot settings:
+4. Now open the Bot settings:  
    ![](./resources/img/discord_create_bot.png)
-5. Copy your bot token and export it as `DISCORD_BOT_TOKEN` environment variable:
+5. Copy your bot token and export it as `DISCORD_BOT_TOKEN` environment variable:  
    ![](./resources/img/discord_get_bot_token.png)
-6. Don't forget to enable `Privileged Gateway Intents` (right below the `Authorization Flows` in the bot settings):
+6. Don't forget to enable `Privileged Gateway Intents` (right below the `Authorization Flows` in the bot settings):  
    ![](./resources/img/discord_intents.png)
 7. Add the bot to your discord server
    ![](./resources/img/discord_oauth2.png)
-8. Copy client id (environment variable `OAUTH_CLIENT_ID`) and client secret (environment variable `OAUTH_CLIENT_SECRET`)
+8. Copy client id (environment variable `OAUTH_CLIENT_ID`) and client secret (environment variable `OAUTH_CLIENT_SECRET`)  
    ![](./resources/img/discord_oauth2_id_and_secret.png)
 9. Create OAuth2 redirect (if you would like to deploy the bot, you need to change 127.0.0.1:8000 to the public url)
-   and export the generated url (don't forget to enable identify scope) as environment variable `OAUTH_URL`.
+   and export the generated url (don't forget to enable identify scope) as environment variable `OAUTH_URL`.  
    ![](./resources/img/discord_oauth2_redirect_url.png)
 
 ## Productive Setup
