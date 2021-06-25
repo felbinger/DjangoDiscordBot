@@ -339,5 +339,5 @@ $RECYCLE.BIN/
 media
 .idea
 
-# added once and removed afterwards to prevent discord token / oauth client secret exposure
-.run/gunicorn.run.xml
+# runconfig with tokens
+.run/gunicorn_secrets.run.xml

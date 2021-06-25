@@ -1,14 +1,17 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="gunicorn" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-    <module name="DjangoDiscordBot_GIT" />
+    <module name="DDBT" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
       <env name="DEBUG" value="1" />
-      <env name="SECRET_KEY" value="s3cr3t_k3y" />
-      <env name="DISCORD_BOT_TOKEN" value="YOUR_DISCORD_TOKEN" />
+      <env name="SECRET_KEY" value="" />
+      <env name="DISCORD_BOT_TOKEN" value="" />
       <env name="DISCORD_BOT_PREFIX" value="." />
+      <env name="OAUTH_URL" value="" />
+      <env name="OAUTH_CLIENT_ID" value="" />
+      <env name="OAUTH_CLIENT_SECRET" value="" />
     </envs>
     <option name="SDK_HOME" value="/usr/bin/python3.8" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/" />
@@ -26,7 +29,7 @@
         <ENTRY IS_ENABLED="true" PARSER="runconfig" />
       </ENTRIES>
     </EXTENSION>
-    <option name="SCRIPT_NAME" value="/usr/local/bin/gunicorn" />
+    <option name="SCRIPT_NAME" value="$USER_HOME$/.local/bin/gunicorn" />
     <option name="PARAMETERS" value="app.asgi:application -k uvicorn.workers.UvicornWorker" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
