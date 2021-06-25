@@ -5,7 +5,7 @@ from discord.ext import commands
 
 __all__ = ["SupportManager"]
 
-from base_app.service.settings import get_setting
+from base.service.settings import get_setting
 
 
 class SupportManager(Cog, name='support_manager'):

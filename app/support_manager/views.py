@@ -7,8 +7,8 @@ from django.http import HttpResponseNotFound, HttpResponseForbidden, HttpRespons
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 
-from base_app.models import DiscordUser
-from base_app.service.event import trigger
+from base.models import User
+from base.service.event import trigger
 
 from .models import Ticket, Service, Message
 from .forms import TicketForm
@@ -54,11 +54,11 @@ def new(request: WSGIRequest):
                 content=_(f"Ticket (#{ticket.id}) has been created!")
             )
 
-            if discord_notifications and (discord_user := DiscordUser.objects.filter(user=request.user).first()):
+            if discord_notifications and (user := User.objects.filter(user=request.user).first()):
                 trigger(
                     cog_name='support_manager',
                     func_name='send_dm',
-                    member_id=discord_user.discord_id,
+                    member_id=user.discord_id,
                     content=_(f"You're ticket (#{ticket.id}) has been created, you will receive updates!")
                 )
 

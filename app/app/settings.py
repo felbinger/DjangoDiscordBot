@@ -16,6 +16,8 @@ import random
 from string import punctuation, digits, ascii_letters
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.db.models import BigIntegerField
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -45,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'oauth2_provider',
-    'base_app.apps.BaseAppConfig',
+    'base.apps.BaseConfig',
     'log_manager.apps.LogManagerConfig',
     'support_manager.apps.SupportConfig'
 ]
@@ -155,7 +157,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # accounts module
-LOGIN_URL = 'base_app:discord_oauth'
+LOGIN_URL = 'base:discord_oauth'
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
@@ -180,3 +182,8 @@ DISCORD_BOT_DESCRIPTION = "Django Discord Bot Template"
 
 # bot settings
 DISCORD_LOGGING_TRANSCRIPTS_MAX = 2000
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = 'base.User'

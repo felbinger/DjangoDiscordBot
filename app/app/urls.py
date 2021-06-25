@@ -7,7 +7,7 @@ from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-    path('', include(('base_app.urls', 'base_app',), namespace='base_app')),
+    path('', include(('base.urls', 'base',), namespace='base')),
     path('admin/', admin.site.urls, name='admin'),
     path('log/', include(('log_manager.urls', 'transcripts',), namespace='log_manager')),
     path('support/', include(('support_manager.urls', 'support_manager',), namespace='support_manager')),

@@ -338,3 +338,6 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/linux,windows,macos,python,intellij,vim
 media
 .idea
+
+# added once and removed afterwards to prevent discord token / oauth client secret exposure
+.run/gunicorn.run.xml

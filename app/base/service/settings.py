@@ -1,5 +1,5 @@
 from asgiref.sync import sync_to_async
-from base_app.models import Settings
+from base.models import Settings
 
 
 @sync_to_async

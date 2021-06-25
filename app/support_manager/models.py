@@ -1,6 +1,7 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+
+from base.models import User
 
 
 class Service(models.Model):

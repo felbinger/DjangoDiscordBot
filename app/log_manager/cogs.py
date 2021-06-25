@@ -11,9 +11,9 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from base_app.service.settings import get_setting
+from base.service.settings import get_setting
 from log_manager.models import Transcript
-from base_app.models import DiscordUser
+from base.models import User
 
 __all__ = ["LogManager"]
 
@@ -22,7 +22,7 @@ __all__ = ["LogManager"]
 def _create_transcript(channel_name: str, created_by: Member, guild_name: str, guild_icon: str, messages: List[Dict]):
     transcript = Transcript(
         channel_name=channel_name,
-        created_by=DiscordUser.objects.filter(user__username=created_by.name).first(),
+        created_by=User.objects.filter(username=created_by.name).first(),
     )
     transcript.save()
 
@@ -44,7 +44,7 @@ def _create_transcript(channel_name: str, created_by: Member, guild_name: str, g
 
 @sync_to_async
 def _has_create_transcripts_permission(username) -> bool:
-    member = DiscordUser.objects.filter(user__username=username).first()
+    member = User.objects.filter(username=username).first()
     return member and member.user.has_perm('log_manager.add_transcript')
 
 

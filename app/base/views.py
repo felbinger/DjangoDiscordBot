@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 import requests
 from django.urls import reverse
 
-from base_app.models import DiscordUser
+from base.models import User
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -25,7 +25,7 @@ def discord_auth_redirect(request: HttpRequest) -> HttpResponse:
         "client_secret": settings.OAUTH_CLIENT_SECRET,
         "grant_type": "authorization_code",
         "code": request.GET.get('code'),
-        "redirect_uri": f"{settings.SCHEMA}://{settings.PUBLIC_URL}{reverse('base_app:discord_oauth_redirect')}",
+        "redirect_uri": f"{settings.SCHEMA}://{settings.PUBLIC_URL}{reverse('base:discord_oauth_redirect')}",
         "scope": "identify"
     }, headers={
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -39,10 +39,10 @@ def discord_auth_redirect(request: HttpRequest) -> HttpResponse:
     if not identity_resp.ok:
         return HttpResponseBadRequest()
 
-    discord_user = DiscordUser.objects.filter(discord_id=identity_resp.json().get('id')).first()
-    if not discord_user:
+    user = User.objects.filter(discord_id=identity_resp.json().get('id')).first()
+    if not user:
         return HttpResponseNotFound("You are not on the server")
 
-    login(request, discord_user.user, backend="oauth2_provider.backends.OAuth2Backend")
+    login(request, user, backend="oauth2_provider.backends.OAuth2Backend")
 
     return redirect(settings.LOGIN_REDIRECT_URL)
