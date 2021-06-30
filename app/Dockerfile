@@ -1,6 +1,6 @@
 ARG DBMS="mariadb"
 
-FROM python:3.9-alpine as builder
+FROM python:3.9.6-alpine as builder
 ARG DBMS
 
 # set work directory
@@ -21,7 +21,7 @@ RUN cp rqmts/requirements.txt requirements.txt; \
 
 RUN pip install --prefix=/build/venv -r requirements.txt
 
-FROM python:3.9-alpine
+FROM python:3.9.6-alpine
 ARG DBMS
 ENV DBMS=${DBMS} PROJECT_NAME="app"
 
