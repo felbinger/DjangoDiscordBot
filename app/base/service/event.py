@@ -1,12 +1,10 @@
-# django to discord event
-
-from django.contrib.auth.models import Group, User
-from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from app.asgi import loop
 from app.bot import bot
 
-from django.dispatch import receiver
+from ..models import Group
+from ..service.signals import group_created, group_deleted
 
 
 def trigger(cog_name: str, func_name, *args, **kwargs):
@@ -16,12 +14,29 @@ def trigger(cog_name: str, func_name, *args, **kwargs):
     loop.create_task(getattr(cog, func_name)(*args, **kwargs))
 
 
-# think about updating the update method of the model...
-# @receiver(post_save, sender=Group)
-# def my_handler(sender, **kwargs):
-#     print(sender, kwargs)
-#
-#
+@receiver(group_created, sender=Group)
+def create_or_update_group_handler(sender, **kwargs):
+    print("group_created signal received")
+    grp = kwargs['instance']
+    if grp and kwargs['created']:
+        trigger('base', 'create_role', grp.name)
+    else:
+        trigger('base', 'update_role', grp.discord_id, grp.name)
+
+
+@receiver(group_deleted, sender=Group)
+def delete_group_handler(sender, **kwargs):
+    print("group_delete signal received")
+    grp = kwargs['instance']
+    if grp:
+        trigger('base', 'delete_role', grp.discord_id)
+
+
 # @receiver(post_save, sender=User)
-# def my_handler(sender, **kwargs):
-#     print(sender, kwargs)
+# def create_or_update_user_handler(sender, **kwargs):
+#     user = kwargs['instance']
+#     if user.discord_id and not kwargs['created']:
+#         # TODO how to get role id - changes in user.groups
+#         pass
+#         # trigger('base', 'add_member_to_role', user.discord_id, 'role_id')
+#         # trigger('base', 'remove_member_from_role', 'user_id', 'role_id')

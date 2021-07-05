@@ -54,6 +54,14 @@ def _user_remove_group(user_id: str, role_id: str):
     grp.user_set.remove(user)
 
 
+@sync_to_async
+def _create_group_by_name(group_id: int, group_name: str):
+    grp = Group.objects.get(name=group_name)
+    if grp:
+        grp.discord_id = group_id
+        grp.save()
+
+
 class Base(Cog, name='base'):
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -107,3 +115,27 @@ class Base(Cog, name='base'):
     # trigger('base', 'remove_member_from_role', 'user_id', 'role_id')
     async def remove_member_from_role(self, member_id: int, role_id: int):
         self.guild.get_member(member_id).remove_roles(role_id)
+
+    # trigger('base', 'create_role', 'role_name')
+    async def create_role(self, role_name):
+        # create discord role
+        await self.guild.create_role(name=role_name)
+
+        # add created discord id to group
+        for role in self.guild.roles:
+            if role.name != role_name:
+                continue
+            await _create_group_by_name(role.id, role_name)
+
+    # trigger('base', 'update_role', 'role_name')
+    async def update_role(self, role_id, role_name):
+        # TODO not updating...
+        for role in self.guild.roles:
+            if role.id != role_id:
+                continue
+            role.name = role_name
+
+    # trigger('base', 'delete_role', 'role_id')
+    async def delete_role(self, role_id):
+        role = await self.guild.get_role(role_id)
+        await role.delete()

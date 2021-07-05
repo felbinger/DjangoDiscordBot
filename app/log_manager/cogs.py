@@ -44,8 +44,8 @@ def _create_transcript(channel_name: str, created_by: Member, guild_name: str, g
 
 @sync_to_async
 def _has_create_transcripts_permission(username) -> bool:
-    member = User.objects.filter(username=username).first()
-    return member and member.user.has_perm('log_manager.add_transcript')
+    user = User.objects.filter(username=username).first()
+    return user and user.has_perm('log_manager.add_transcript')
 
 
 class LogManager(Cog, name="log_manager"):

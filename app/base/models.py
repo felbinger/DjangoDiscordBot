@@ -19,5 +19,7 @@ class User(AbstractUser):
     is_bot = models.BooleanField(default=False)
 
 
+# TODO group names are unique - discord role names aren't
+# TODO discord roles are sorted - django groups aren't
 class Group(DefaultGroup):
     discord_id = models.IntegerField(null=True, blank=True, unique=True)

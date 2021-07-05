@@ -13,9 +13,9 @@
       <env name="OAUTH_CLIENT_ID" value="" />
       <env name="OAUTH_CLIENT_SECRET" value="" />
     </envs>
-    <option name="SDK_HOME" value="/usr/bin/python3.8" />
+    <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/" />
-    <option name="IS_MODULE_SDK" value="false" />
+    <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -29,7 +29,7 @@
         <ENTRY IS_ENABLED="true" PARSER="runconfig" />
       </ENTRIES>
     </EXTENSION>
-    <option name="SCRIPT_NAME" value="$USER_HOME$/.local/bin/gunicorn" />
+    <option name="SCRIPT_NAME" value="../venv/bin/gunicorn" />
     <option name="PARAMETERS" value="app.asgi:application -k uvicorn.workers.UvicornWorker" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />

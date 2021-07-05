@@ -4,6 +4,7 @@ from django.forms import ModelForm, IntegerField, TextInput
 from oauth2_provider.models import AccessToken, Application, Grant, RefreshToken, IDToken
 
 from .models import User, Group, Settings
+from .service.signals import group_created, group_deleted
 
 
 class UserAdminForm(ModelForm):
@@ -20,6 +21,10 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('is_staff', 'is_superuser')
     form = UserAdminForm
 
+    # TODO handle groups
+    def save_model(self, request, obj, form, change):
+        super(UserAdmin, self).save_model(request, obj, form, change)
+
 
 class GroupAdminForm(ModelForm):
     """
@@ -33,6 +38,14 @@ class GroupAdminForm(ModelForm):
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'discord_id')
     form = GroupAdminForm
+
+    def save_model(self, request, obj, form, change):
+        super(GroupAdmin, self).save_model(request, obj, form, change)
+        group_created.send(sender=Group, instance=obj, created=not change)
+
+    def delete_model(self, request, obj):
+        super(GroupAdmin, self).delete_model(request, obj)
+        group_deleted.send(sender=Group, instance=obj)
 
 
 @admin.register(Settings)
