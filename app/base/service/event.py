@@ -14,9 +14,9 @@ def trigger(cog_name: str, func_name, *args, **kwargs):
     loop.create_task(getattr(cog, func_name)(*args, **kwargs))
 
 
+# DJANGO ADMIN: CREATE GRP (ID UNKNOWN) -> DISCORD CREATE ROLE (GEN ID) -> DJANGO GRP->ID = ID
 @receiver(group_created, sender=Group)
 def create_or_update_group_handler(sender, **kwargs):
-    print("group_created signal received")
     grp = kwargs['instance']
     if grp and kwargs['created']:
         trigger('base', 'create_role', grp.name)
@@ -26,7 +26,6 @@ def create_or_update_group_handler(sender, **kwargs):
 
 @receiver(group_deleted, sender=Group)
 def delete_group_handler(sender, **kwargs):
-    print("group_delete signal received")
     grp = kwargs['instance']
     if grp:
         trigger('base', 'delete_role', grp.discord_id)

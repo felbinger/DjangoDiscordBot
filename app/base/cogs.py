@@ -4,6 +4,7 @@ from asgiref.sync import sync_to_async
 from discord import Guild, Role, Member
 from discord.ext import commands
 from discord.ext.commands import Cog, Bot
+from django.db.models import Q
 
 from base.models import User, Group
 
@@ -25,10 +26,13 @@ def _create_or_update_user(user_id: int, username: str, is_bot: bool):
 
 @sync_to_async
 def _create_or_update_group(group_id: int, group_name: str):
-    grp, _ = Group.objects.get_or_create(discord_id=group_id)
-    if grp:
-        grp.name = group_name
-        grp.save()
+    if grp := Group.objects.filter(Q(discord_id=group_id) | Q(name=group_name)):
+        grp.update(
+            name=group_name,
+            discord_id=group_id
+        )
+    else:
+        Group.objects.create(discord_id=group_id, name=group_name)
 
 
 @sync_to_async
@@ -52,14 +56,6 @@ def _user_remove_group(user_id: str, role_id: str):
     if not user or not grp:
         return
     grp.user_set.remove(user)
-
-
-@sync_to_async
-def _create_group_by_name(group_id: int, group_name: str):
-    grp = Group.objects.get(name=group_name)
-    if grp:
-        grp.discord_id = group_id
-        grp.save()
 
 
 class Base(Cog, name='base'):
@@ -125,7 +121,7 @@ class Base(Cog, name='base'):
         for role in self.guild.roles:
             if role.name != role_name:
                 continue
-            await _create_group_by_name(role.id, role_name)
+            await _create_or_update_group(role.id, role_name)
 
     # trigger('base', 'update_role', 'role_name')
     async def update_role(self, role_id, role_name):
